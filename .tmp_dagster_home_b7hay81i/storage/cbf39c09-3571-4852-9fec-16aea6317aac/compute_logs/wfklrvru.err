@@ -1,8 +1,0 @@
-[32m2025-10-02 20:38:21 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - 327345 - LOGS_CAPTURED - Started capturing logs in process (pid: 327345).
-[32m2025-10-02 20:38:21 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - 327345 - transformation_cart - STEP_START - Started execution of step "transformation_cart".
-[32m2025-10-02 20:38:21 +0700[0m - dagster - [34mINFO[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - transformation_cart - transform carts success
-[32m2025-10-02 20:38:21 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - 327345 - transformation_cart - STEP_OUTPUT - Yielded output "result" of type "DataFrame". (Type check passed).
-[32m2025-10-02 20:38:21 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - transformation_cart - Writing file at: /home/manz/Developments/Dagster/fakestore/.tmp_dagster_home_b7hay81i/storage/transformation_cart using PickledObjectFilesystemIOManager...
-[32m2025-10-02 20:38:22 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - 327345 - transformation_cart - ASSET_MATERIALIZATION - Materialized value transformation_cart.
-[32m2025-10-02 20:38:22 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - 327345 - transformation_cart - HANDLED_OUTPUT - Handled output "result" using IO manager "io_manager"
-[32m2025-10-02 20:38:22 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cbf39c09-3571-4852-9fec-16aea6317aac - 327345 - transformation_cart - STEP_SUCCESS - Finished execution of step "transformation_cart" in 1.24s.

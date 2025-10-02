@@ -1,8 +1,0 @@
-[32m2025-10-02 20:31:12 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 317735 - LOGS_CAPTURED - Started capturing logs in process (pid: 317735).
-[32m2025-10-02 20:31:12 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 317735 - extract_user_from_api - STEP_START - Started execution of step "extract_user_from_api".
-[32m2025-10-02 20:31:13 +0700[0m - dagster - [34mINFO[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - extract_user_from_api - extract users from api success
-[32m2025-10-02 20:31:13 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 317735 - extract_user_from_api - STEP_OUTPUT - Yielded output "result" of type "[dict]". (Type check passed).
-[32m2025-10-02 20:31:13 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - extract_user_from_api - Writing file at: /home/manz/Developments/Dagster/fakestore/.tmp_dagster_home_b7hay81i/storage/extract_user_from_api using PickledObjectFilesystemIOManager...
-[32m2025-10-02 20:31:15 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 317735 - extract_user_from_api - ASSET_MATERIALIZATION - Materialized value extract_user_from_api.
-[32m2025-10-02 20:31:15 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 317735 - extract_user_from_api - HANDLED_OUTPUT - Handled output "result" using IO manager "io_manager"
-[32m2025-10-02 20:31:15 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 317735 - extract_user_from_api - STEP_SUCCESS - Finished execution of step "extract_user_from_api" in 3.53s.
