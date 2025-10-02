@@ -1,0 +1,8 @@
+[32m2025-10-02 20:32:35 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 319728 - LOGS_CAPTURED - Started capturing logs in process (pid: 319728).
+[32m2025-10-02 20:32:35 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 319728 - transformation_user - STEP_START - Started execution of step "transformation_user".
+[32m2025-10-02 20:32:36 +0700[0m - dagster - [34mINFO[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - transformation_user - transform users success
+[32m2025-10-02 20:32:36 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 319728 - transformation_user - STEP_OUTPUT - Yielded output "result" of type "DataFrame". (Type check passed).
+[32m2025-10-02 20:32:36 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - transformation_user - Writing file at: /home/manz/Developments/Dagster/fakestore/.tmp_dagster_home_b7hay81i/storage/transformation_user using PickledObjectFilesystemIOManager...
+[32m2025-10-02 20:32:37 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 319728 - transformation_user - ASSET_MATERIALIZATION - Materialized value transformation_user.
+[32m2025-10-02 20:32:37 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 319728 - transformation_user - HANDLED_OUTPUT - Handled output "result" using IO manager "io_manager"
+[32m2025-10-02 20:32:37 +0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - c023670f-d1bb-4433-8a80-562f1a3e8cce - 319728 - transformation_user - STEP_SUCCESS - Finished execution of step "transformation_user" in 1.29s.
