@@ -4,6 +4,8 @@ import requests as req
 import pandas as pd
 import json
 
+from fakestore.defs.resources import ClickhouseResource
+
 @dg.asset(group_name="user_asset")
 def extract_user_from_api(context: AssetExecutionContext) -> list[dict]:
     try:
@@ -49,10 +51,10 @@ def transformation_user(context: AssetExecutionContext) -> pd.DataFrame:
         df = pd.DataFrame(users)
 
         # convert data type
-        df["id"] = pd.to_numeric(df["id"], errors='coerce')
-        df["number"] = pd.to_numeric(df["number"], errors='coerce')
+        df["id"] = pd.to_numeric(df["id"], errors='coerce').astype("int64")
+        df["number"] = pd.to_numeric(df["number"], errors='coerce').astype("int32")
         df["phone"] = df["phone"].str.replace("-", "")
-        df["phone"] = pd.to_numeric(df["phone"], errors='coerce')
+        df["phone"] = pd.to_numeric(df["phone"], errors='coerce').astype("int32")
 
         # clean text data
         df["email"] = df["email"].str.lower()
@@ -71,11 +73,15 @@ def transformation_user(context: AssetExecutionContext) -> pd.DataFrame:
     return pd.DataFrame([])
 
 @dg.asset(group_name="user_asset", deps=["transformation_user"])
-def load_user_parquet_to_warehouse(context: AssetExecutionContext, transformation_user: pd.DataFrame) -> None:
-    data: pd.DataFrame = transformation_user
+def load_user_parquet_to_warehouse(
+    context: AssetExecutionContext,
+    transformation_user: pd.DataFrame,
+    clickhouse: ClickhouseResource) -> None:
     filename: str = "users_clean"
     try:
-        data.to_parquet(f"data/warehouse/{filename}.parquet", index=False)
+        client = clickhouse.get_client()
+        client.insert_df("users", transformation_user)
+        # data.to_parquet(f"data/warehouse/{filename}.parquet", index=False)
         context.log.info(f"load {filename} to warehouse success")
     except Exception as e:
         context.log.error(f"failed load {filename} to warehouse: {e}")

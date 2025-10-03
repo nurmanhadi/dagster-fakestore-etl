@@ -5,3 +5,4 @@ dagster-duckdb
 pandas
 requests
 pyarrow
+clickhouse-connect
