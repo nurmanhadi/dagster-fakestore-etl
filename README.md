@@ -1,61 +1,102 @@
-# fakestore
+# DAGSTER ETL PIPELINE END-TO-END 🚀
 
-## Getting started
+A simple ETL (Extract, Transform, Load) pipeline uses Dagster (https://dagster.io/) to manage the end-to-end data flow.
+This pipeline retrieves user data from the FakeStore API (https://fakestoreapi.com/), stores it in a data lake, performs transformations, and then stores the clean results in a clickhouse data warehouse.
 
-### Installing dependencies
+---
 
-**Option 1: uv**
+## ⚙️ Tech Stack
+- **Dagster** → workflow orchestration & scheduling
+- **Python pandas** → data processing
+- **Docker Compose** → environment service (ClickHouse, Metabase, Postgres)
+- **Metabase** → data visualization
+- **ClickHouse** → analytical database / warehouse
 
-Ensure [`uv`](https://docs.astral.sh/uv/) is installed following their [official documentation](https://docs.astral.sh/uv/getting-started/installation/).
+---
 
-Create a virtual environment, and install the required dependencies using _sync_:
+## Etl Flow
 
+![flow etl](./docs/flow-etl.jpg)
+
+---
+
+## Project Structure
 ```bash
-uv sync
+.
+├── data
+│   ├── lake
+│   └── warehouse
+├── docker-compose.yml
+├── LICENCE.md
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+├── src
+│   └── fakestore
+│       ├── definitions.py
+│       ├── defs
+│       │   ├── cart
+│       │   │   └── assets.py
+│       │   ├── __init__.py
+│       │   ├── jobs.py
+│       │   ├── product
+│       │   │   └── assets.py
+│       │   ├── schedules.py
+│       │   └── user
+│       │       ├── assets.py
+│       │       ├── __init__.py
+│       │       └── __pycache__
+│       ├── __init__.py
+└── tests
+    └── __init__.py
 ```
 
-Then, activate the virtual environment:
+---
 
-| OS | Command |
-| --- | --- |
-| MacOS | ```source .venv/bin/activate``` |
-| Windows | ```.venv\Scripts\activate``` |
+## Installation
 
-**Option 2: pip**
-
-Install the python dependencies with [pip](https://pypi.org/project/pip/):
-
+### 1. Clone Repository
 ```bash
+git clone https://github.com/nurmanhadi/dagster-fakestore-etl.git
+```
+### 2. Setup Environtment
+create `.env` file
+```bash
+CLICKHOUSE_USER=fakestore
+CLICKHOUSE_PASSWORD=fakestore
+
+POSTGRES_USER=fakestore
+POSTGRES_DB=fakestore
+POSTGRES_PASSWORD=fakestore
+```
+
+### 3. Install Dependencies
+```bash
+# create venv
 python3 -m venv .venv
+source .venv/bin/activate # linux/mac
+
+# run pip installation
+pip install --editable .
+pip install -r requirements.txt
 ```
 
-Then activate the virtual environment:
-
-| OS | Command |
-| --- | --- |
-| MacOS | ```source .venv/bin/activate``` |
-| Windows | ```.venv\Scripts\activate``` |
-
-Install the required dependencies:
-
+### 4. Run Docker Compose
 ```bash
-pip install -e ".[dev]"
+docker compose up -d
 ```
 
-### Running Dagster
-
-Start the Dagster UI web server:
-
+### 5. Run Project
 ```bash
 dg dev
 ```
 
-Open http://localhost:3000 in your browser to see the project.
+---
 
-## Learn more
+## How to Access Services
+- Dagster UI → [http://localhost:3000](http://localhost:3000)
+- Metabase → [http://localhost:3001](http://localhost:3001)
+- ClickHouse (HTTP) → [http://localhost:18123](http://localhost:18123)
+- Postgres → localhost:5432
 
-To learn more about this template and Dagster in general:
-
-- [Dagster Documentation](https://docs.dagster.io/)
-- [Dagster University](https://courses.dagster.io/)
-- [Dagster Slack Community](https://dagster.io/slack)
+---
