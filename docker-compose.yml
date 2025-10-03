@@ -1,0 +1,68 @@
+services:
+  fakestore-clickhouse-server:
+    image: clickhouse:latest
+    container_name: fakestore-clickhouse-server
+    hostname: fakestore-clickhouse-server
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - ch_data:/var/lib/clickhouse/
+      - ch_logs:/var/log/clickhouse-server/
+    networks:
+      - fakestore-network
+
+  fakestore-metabase:
+    image: metabase/metabase:latest
+    container_name: fakestore-metabase
+    hostname: fakestore-metabase
+    ports:
+      - "3001:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${POSTGRES_DB}
+      MB_DB_PORT: 5432
+      MB_DB_USER: ${POSTGRES_USER}
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+      MB_DB_HOST: fakestore-postgres
+    healthcheck:
+      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - data:/var/lib/metabase/data/
+    networks:
+      - fakestore-network
+    depends_on:
+      - fakestore-postgres
+      - fakestore-clickhouse-server
+
+  fakestore-postgres:
+    image: postgres:latest
+    container_name: fakestore-postgres
+    hostname: fakestore-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - data:/var/lib/postgresql/data/
+    networks:
+      - fakestore-network
+
+volumes:
+  ch_data:
+  ch_logs:
+  data:
+
+networks:
+  fakestore-network:
+    driver: bridge
