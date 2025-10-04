@@ -4,6 +4,8 @@ import requests as req
 import pandas as pd
 import json
 
+from fakestore.defs.resources import ClickhouseResource
+
 @dg.asset(group_name="product_asset")
 def extrack_product_from_api(context: AssetExecutionContext) -> list[dict]:
     try:
@@ -49,35 +51,35 @@ def transformation_product(context: AssetExecutionContext) -> pd.DataFrame:
         df = pd.DataFrame(products)
 
         # convert data type
-        df["id"] = pd.to_numeric(df["id"], errors='coerce')
-        df["price_usd"] = pd.to_numeric(df["price_usd"], errors='coerce')
-        df["rate"] = pd.to_numeric(df["rate"], errors='coerce')
-        df["count"] = pd.to_numeric(df["count"], errors='coerce')
+        df["id"] = pd.to_numeric(df["id"], errors='coerce').astype("int64")
+        df["price_usd"] = pd.to_numeric(df["price_usd"], errors='coerce').astype("float64")
+        df["rate"] = pd.to_numeric(df["rate"], errors='coerce').astype("float64")
+        df["count"] = pd.to_numeric(df["count"], errors='coerce').astype("int64")
 
         # add column price_idr
-        df["price_idr"] = idr * df["price_usd"]
+        df["price_idr"] = idr * df["price_usd"].astype("float64")
 
         # clean text data
-        df["title"] = df["title"].str.lower()
-        df["description"] = df["description"].str.lower()
-        df["category"] = df["category"].str.lower()
+        df[["title", "description", "category"]] = df[["title", "description", "category"]].apply(lambda x: x.str.strip().str.lower())
 
         # clean data
         df.dropna(inplace=True)
         df.drop_duplicates(inplace=True)
-        context.log.info("transform products success")
+        context.log.info("transformation product success")
         return df
     except Exception as e:
-        context.log.error(f"failed transform products: {e}")
+        context.log.error(f"failed transformation product: {e}")
 
     return pd.DataFrame([])
 
 @dg.asset(group_name="product_asset", deps=["transformation_product"])
-def load_product_parquet_to_warehouse(context: AssetExecutionContext, transformation_product: pd.DataFrame) -> None:
-    data: pd.DataFrame = transformation_product
-    filename: str = "products_clean"
+def load_product_to_warehouse(
+    context: AssetExecutionContext,
+    transformation_product: pd.DataFrame,
+    clickhouse: ClickhouseResource) -> None:
     try:
-        data.to_parquet(f"data/warehouse/{filename}.parquet", index=False)
-        context.log.info(f"load {filename} to warehouse success")
+        client = clickhouse.get_client()
+        client.insert_df("products", transformation_product)
+        context.log.info("load product to warehouse success")
     except Exception as e:
-        context.log.error(f"failed load {filename} to warehouse: {e}")
+        context.log.error(f"failed load product to warehouse: {e}")

@@ -12,10 +12,10 @@ def extract_user_from_api(context: AssetExecutionContext) -> list[dict]:
         response = req.get('https://fakestoreapi.com/users')
         if response.status_code != 200:
             context.log.warning(response.status_code)
-        context.log.info("extract users from api success")
+        context.log.info("extract user from api success")
         return response.json()
     except Exception as e:
-        context.log.error(f"failed extract users from api: {e}")
+        context.log.error(f"failed extract user from api: {e}")
     return []
 
 @dg.asset(group_name="user_asset", deps=["extract_user_from_api"])
@@ -52,36 +52,32 @@ def transformation_user(context: AssetExecutionContext) -> pd.DataFrame:
 
         # convert data type
         df["id"] = pd.to_numeric(df["id"], errors='coerce').astype("int64")
-        df["number"] = pd.to_numeric(df["number"], errors='coerce').astype("int32")
+        df["number"] = pd.to_numeric(df["number"], errors='coerce').astype("int64")
         df["phone"] = df["phone"].str.replace("-", "")
-        df["phone"] = pd.to_numeric(df["phone"], errors='coerce').astype("int32")
+        df["phone"] = pd.to_numeric(df["phone"], errors='coerce').astype("int64")
 
         # clean text data
-        df["email"] = df["email"].str.lower()
-        df["city"] = df["city"].str.lower()
-        df["street"] = df["street"].str.lower()
+        df[["email", "city", "street"]] = df[["email", "city", "street"]].apply(lambda x: x.str.lower())
 
         # clean data
         df.dropna(inplace=True)
         df.drop_duplicates(inplace=True)
 
-        context.log.info("transform users success")
+        context.log.info("transformation user success")
         return df
     except Exception as e:
-        context.log.error(f"failed transform users: {e}")
+        context.log.error(f"failed transformation user: {e}")
 
     return pd.DataFrame([])
 
 @dg.asset(group_name="user_asset", deps=["transformation_user"])
-def load_user_parquet_to_warehouse(
+def load_user_to_warehouse(
     context: AssetExecutionContext,
     transformation_user: pd.DataFrame,
     clickhouse: ClickhouseResource) -> None:
-    filename: str = "users_clean"
     try:
         client = clickhouse.get_client()
         client.insert_df("users", transformation_user)
-        # data.to_parquet(f"data/warehouse/{filename}.parquet", index=False)
-        context.log.info(f"load {filename} to warehouse success")
+        context.log.info("load user to warehouse success")
     except Exception as e:
-        context.log.error(f"failed load {filename} to warehouse: {e}")
+        context.log.error(f"failed load user to warehouse: {e}")

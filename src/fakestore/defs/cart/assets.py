@@ -4,6 +4,8 @@ import requests as req
 import pandas as pd
 import json
 
+from fakestore.defs.resources import ClickhouseResource
+
 @dg.asset(group_name="cart_asset")
 def extract_cart_from_api(context: AssetExecutionContext) -> list[dict]:
     try:
@@ -46,29 +48,32 @@ def transformation_cart(context: AssetExecutionContext) -> pd.DataFrame:
         df = pd.DataFrame(carts)
 
         # convert type data
-        df["id"] = pd.to_numeric(df["id"], errors='coerce')
-        df["user_id"] = pd.to_numeric(df["user_id"], errors='coerce')
-        df["product_id"] = pd.to_numeric(df["product_id"], errors='coerce')
-        df["quantity"] = pd.to_numeric(df["quantity"], errors='coerce')
+        df["id"] = pd.to_numeric(df["id"], errors='coerce').astype("int64")
+        df["user_id"] = pd.to_numeric(df["user_id"], errors='coerce').astype("int64")
+        df["product_id"] = pd.to_numeric(df["product_id"], errors='coerce').astype("int64")
+        df["quantity"] = pd.to_numeric(df["quantity"], errors='coerce').astype("int64")
         df["date"] = pd.to_datetime(df["date"], format="mixed")
 
         # clean data
         df.dropna(inplace=True)
         df.drop_duplicates(inplace=True)
 
-        context.log.info("transform carts success")
+        context.log.info("transformation cart success")
         return df
     except Exception as e:
-        context.log.error(f"failed transform carts: {e}")
+        context.log.error(f"failed transformation cart: {e}")
 
     return pd.DataFrame([])
 
 @dg.asset(group_name="cart_asset", deps=["transformation_cart"])
-def load_cart_parquet_to_warehouse(context: AssetExecutionContext, transformation_cart: pd.DataFrame) -> None:
-    data: pd.DataFrame = transformation_cart
-    filename: str = "products_clean"
+def load_cart_to_warehouse(
+    context: AssetExecutionContext,
+    transformation_cart: pd.DataFrame,
+    clickhouse: ClickhouseResource
+    ) -> None:
     try:
-        data.to_parquet(f"data/warehouse/{filename}.parquet", index=False)
-        context.log.info(f"load {filename} to warehouse success")
+        client = clickhouse.get_client()
+        client.insert_df("carts", transformation_cart)
+        context.log.info("load cart to warehouse success")
     except Exception as e:
-        context.log.error(f"failed load {filename} to warehouse: {e}")
+        context.log.error(f"failed load cart to warehouse: {e}")

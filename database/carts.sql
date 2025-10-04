@@ -1,8 +1,8 @@
 CREATE TABLE carts (
-    id UInt32,
-    user_id UInt32,
-    product_id UInt32,
-    quantity UInt32,
+    id Int64,
+    user_id Int64,
+    product_id Int64,
+    quantity Int64,
     date DateTime
 ) ENGINE = MergeTree
 ORDER BY (id, user_id, product_id);

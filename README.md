@@ -62,8 +62,11 @@ git clone https://github.com/nurmanhadi/dagster-fakestore-etl.git
 ### 2. Setup Environtment
 create `.env` file
 ```bash
+CLICKHOUSE_HOST=localhost
+CLICKHOUSE_PORT=8123
 CLICKHOUSE_USER=fakestore
 CLICKHOUSE_PASSWORD=fakestore
+CLICKHOUSE_DBNAME=fakestore
 
 POSTGRES_USER=fakestore
 POSTGRES_DB=fakestore
