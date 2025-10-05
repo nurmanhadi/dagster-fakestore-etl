@@ -52,9 +52,8 @@ def transformation_user(context: AssetExecutionContext) -> pd.DataFrame:
 
         # convert data type
         df["id"] = pd.to_numeric(df["id"], errors='coerce').astype("int64")
-        df["number"] = pd.to_numeric(df["number"], errors='coerce').astype("int64")
-        df["phone"] = df["phone"].str.replace("-", "")
-        df["phone"] = pd.to_numeric(df["phone"], errors='coerce').astype("int64")
+        df["number"] = pd.to_numeric(df["number"], errors='coerce').astype("int32")
+        df["phone"] = df["phone"].str.replace("-", "").astype("object")
 
         # clean text data
         df[["email", "city", "street"]] = df[["email", "city", "street"]].apply(lambda x: x.str.lower())
@@ -76,6 +75,7 @@ def load_user_to_warehouse(
     transformation_user: pd.DataFrame,
     clickhouse: ClickhouseResource) -> None:
     try:
+        print(transformation_user.info())
         client = clickhouse.get_client()
         client.insert_df("users", transformation_user)
         context.log.info("load user to warehouse success")

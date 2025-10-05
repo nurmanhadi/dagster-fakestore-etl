@@ -1,13 +1,13 @@
 CREATE TABLE users (
-    id INT,
+    id Int64,
     email String,
     username String,
     password String,
     name String,
-    phone INT,
+    phone String,
     city String,
     street String,
-    number INT,
+    number Int32,
     zipcode String
 ) ENGINE = MergeTree
 ORDER BY id;

@@ -6,7 +6,7 @@ CREATE TABLE products (
     category String,
     image String,
     rate Float64,
-    count UInt32,
+    count Int64,
     price_idr Float64
 ) ENGINE = MergeTree
 ORDER BY id;
